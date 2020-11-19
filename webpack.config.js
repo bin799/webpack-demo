@@ -32,7 +32,8 @@ module.exports = {
     ],
     module:{//这个是第三方的加载器
         rules:[//正则的文件匹配规则
-            {test:/\.css$/,use:['style-loader','css-loader']}
+            {test:/\.(css|less)$/,use:['style-loader','css-loader','less-loader']},
+            {test: /\.(png|jpg|gif)$/, use: 'url-loader?limit=43960'} //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
         ]
     }
 };
