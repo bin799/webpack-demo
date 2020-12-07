@@ -11,7 +11,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 let TerserJSPlugin = require('terser-webpack-plugin');   
 // 压缩js
 module.exports = {
-    mode: 'development', //production:生产模式、development：开发模式
+    mode: 'production', //production:生产模式、development：开发模式
     entry: "./src/index.js", //相对路径
     output: {
         filename: "index.js", //输出文件名称
@@ -42,6 +42,9 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({        // 创建该插件的实例
             filename: 'index.css'    // 指定输出的css文件的文件名
+        }),
+        new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
+            bin:'jquery' 
         })
     ],
     module:{//这个是第三方的加载器
@@ -53,7 +56,10 @@ module.exports = {
                 'less-loader',
                 'postcss-loader'
             ]},
-            {test: /\.(png|jpg|gif)$/, use: 'url-loader?limit=43960'} //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
+            {
+                test: /\.(png|jpg|gif)$/, 
+                use: 'url-loader?limit=43960'
+            }, //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
         ]
     },
     optimization: { // 配置webpack的优化项

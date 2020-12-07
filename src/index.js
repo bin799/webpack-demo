@@ -7,13 +7,7 @@ import './css/index.css';
 import "./less/index.less";
 (()=>{
    console.log(location.protocol + "//" + location.host,process.env.BASE_URL,process.env.NODE_ENV)
+   console.log("$",bin)
+   console.log("window",window.bin)
 })()
-
-class A {
-   constructor(){
-      this.className = 'A' 
-   }
-}
-
-let a = new A();
 
