@@ -1,3 +1,10 @@
+// module:option-esModule:false 不支持es6已经语法
+// outputPath负责输出目录, 即打包后的写在磁盘的位置.
+// publicPath则是对页面引入资源的补充,比如img标签引入或者css引入等.指定目标文件的自定义公共路径,它是定义公共路径,所以我们在开发模式下能正确引入文件,因为都在同一个路径下,即localhost:8080.
+// outputPath: './img',
+// publicPath: '/img' 开发环境
+// publicPath: '../img' //生产环境
+
 const path = require("path");
 const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
@@ -57,9 +64,48 @@ module.exports = {
                 'postcss-loader'
             ]},
             {
-                test: /\.(png|jpg|gif)$/, 
-                use: 'url-loader?limit=43960'
-            }, //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
+                test: /\.js$/,      // 匹配js文件，然后用下面所配置的工具对这些文件进行编译处理
+                use: {
+                    loader: 'babel-loader',     // babel的核心模块
+                    options: {
+                        presets: [              // 配置babel的预设，将ES语法转成ES5语法,更高级的es7以上语法需要单独配置
+                            '@babel/preset-env'
+                        ],
+                        plugins: [  // 配置babel插件，转换更更高版本语法
+                            '@babel/plugin-proposal-class-properties' //编译 class
+                        ]
+                    }
+                }
+            },
+            // {
+            //     test: /\.(png|jpg|jpeg|gif)$/,   
+            //     use: {
+            //         loader: 'file-loader',
+            //         options:{
+            //             esModule:false //不支持es6已经语法
+            //         }    
+            //     }
+            // },
+            {
+                test: /\.(png|jpg|jpeg|gif)$/, 
+                use: {
+                    loader: 'url-loader',//url-loader 功能类似于 file-loader，但是在文件大小（单位 byte）低于指定的限制时，可以返回一个 DataURL。 file-loader与 url-loader不能共用;
+                                         //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
+                                         //优化图片处理方式，减少http请求
+                    options: {
+                      limit: 50*1024,
+                      esModule:false //不支持es6已经语法
+                    }
+                }
+            }, 
+            {
+                test: /\.html$/,
+                use: {
+                    loader:'html-withimg-loader' //处理 .html 文件中引用的图片，使得图片能够被正常使用;在file-loader或者url-loader的基础上
+                }
+            },
+            
+           
         ]
     },
     optimization: { // 配置webpack的优化项

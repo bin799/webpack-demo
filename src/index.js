@@ -11,3 +11,9 @@ import "./less/index.less";
    console.log("window",window.bin)
 })()
 
+class A {
+   className = 'A' 
+}
+
+let a = new A();
+console.log(a);
