@@ -6,30 +6,14 @@ console.log(name);
 import './css/index.css';
 import "./less/index.less";
 (()=>{
-    let timer = async function timer() {
-        return new Promise((reslove, reject) => {
-            setTimeout(() => {
-                reslove('a');
-            }, 1000);
-        })
-    }
-    timer().then(result => {
-        console.log(result);
-    }).catch(err => {
-        console.log(err.message);
-    })
-
-    //返回同步的值
-    let sayHello = async function sayHello() {
-        let hi = 'hello world'//等同于return Promise.resolve(hi);
-        return hi
-    }
-    sayHello().then(res => {
-        console.log(res)
-    }).catch(err => {
-        console.log(err.message);
-    })
+   console.log(location.protocol + "//" + location.host,process.env.BASE_URL,process.env.NODE_ENV)
 })()
 
+class A {
+   constructor(){
+      this.className = 'A' 
+   }
+}
 
+let a = new A();
 

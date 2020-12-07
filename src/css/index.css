@@ -1,4 +1,6 @@
 h1{
     color: red;
     background: url("../img/timg.jpg") 0 0 no-repeat;
+    transform:rotate(30deg);
+    transition: transform 1s;
 }
