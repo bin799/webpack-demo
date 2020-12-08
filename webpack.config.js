@@ -1,9 +1,33 @@
 // module:option-esModule:false 不支持es6已经语法
+
 // outputPath负责输出目录, 即打包后的写在磁盘的位置.
-// publicPath则是对页面引入资源的补充,比如img标签引入或者css引入等.指定目标文件的自定义公共路径,它是定义公共路径,所以我们在开发模式下能正确引入文件,因为都在同一个路径下,即localhost:8080.
-// outputPath: './img',
-// publicPath: '/img' 开发环境
-// publicPath: '../img' //生产环境
+// publicPath用来指定资源的请求位置,比如img标签引入或者css引入等;
+// import Img from './img.jpg';
+// outputPath: 'static/img/',
+// publicPath: './dist/static/img/'
+// publicPath有3种形式:
+// 1、HTML相关
+// 我们可以将publicPath指定为HTML的相对路径，在请求这些资源时会以当前页面HTML所在路径加上相对路径，构成实际请求的URL
+// //假设当前html地址为：https://www.example.com/app/index.html
+// //异步加载的资源名为 1.chunk.js
+// pubilicPath:"" 		//-->https://www.example.com/app/1.chunk.js
+// pubilicPath:"./js" 	//-->https://www.example.com/app/js/1.chunk.js
+// pubilicPath:"../assets/"  	//-->https://www.example.com/assets/1.chunk.js
+// 2、Host相关
+// 若publicPath的值以“/”开始，则代表此时publicPath是以当前页面的host name为基础路径的;
+// //假设当前html地址为：https://www.example.com/app/index.html
+// //异步加载的资源名为 1.chunk.js
+// pubilicPath:"/" 	//-->https://www.example.com/1.chunk.js
+// pubilicPath:"/js/" 	//-->https://www.example.com/js/1.chunk.js
+// 3、CDN相关
+// 上面两个都是相对路径，我们也可以使用绝对路径的形式配置publicPath
+// 这种情况一般发生于静态资源放在CDN上面时，由于其域名与当前页面域名不一致，需要以绝对路径的形式进行指定
+// 当publicPath以协议头或相对协议的形式开始时，代表当前路径是CDN相关
+// //假设当前html地址为：https://www.example.com/app/index.html
+// //异步加载的资源名为 1.chunk.js
+// pubilicPath:"http://cdn.com/" 	//-->http://cdn.com/1.chunk.js
+// pubilicPath:"https://cdn.com/"	//-->https://cdn.com/1.chunk.js
+// pubilicPath:"//cdn.com/assets"	//-->//cdn.com/assets/1.chunk.js
 
 const path = require("path");
 const webpack = require('webpack');
@@ -19,16 +43,26 @@ let TerserJSPlugin = require('terser-webpack-plugin');
 // 压缩js
 module.exports = {
     mode: 'production', //production:生产模式、development：开发模式
-    entry: "./src/index.js", //相对路径
+    entry: {
+        //设置多个入口
+        index:"./src/index.js",
+        vender:"./src/vender.js",
+    }, //相对路径
     output: {
-        filename: "index.js", //输出文件名称
+        filename: "[name]_[hash].js", //输出文件名称
+        // [name]可以指代chunk name
+        // [hash]：指代Webpack此次打包所有资源生成的hash
+        // [chunkhash]：指代当前chunk内容的hash
+        // [id]：指代当前chunk的id
+        // [query]：指代filename配置项中的query
+        // hash、chunkhash：控制客户端缓存
         path: path.resolve(__dirname, "dist") //输出路径为绝对路劲
     },
     devServer: {
         port: "3010", //指定开发服务器的端口
         progress: true, //显示开启本地服务器的进度
         contentBase: path.resolve(__dirname, "src"), //指定本地服务器默认打开的目录
-        compress: true, //是否对代码惊醒压缩
+        compress: true, //是否对代码进行压缩
         hot:true
         // // gzip压缩
         // compress: true,
