@@ -43,6 +43,9 @@ let TerserJSPlugin = require('terser-webpack-plugin');
 // 压缩js
 module.exports = {
     mode: 'production', //production:生产模式、development：开发模式
+    // externals: { //防止将某些 import 的包(package)打包到 bundle 中，而是在运行时(runtime)再去从外部获取这些扩展依赖
+    //     jquery: 'jQuery'
+    // },
     entry: {
         //设置多个入口
         index:"./src/index.js",
@@ -84,9 +87,9 @@ module.exports = {
         new MiniCssExtractPlugin({        // 创建该插件的实例
             filename: 'index.css'    // 指定输出的css文件的文件名
         }),
-        new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
-            bin:'jquery' 
-        })
+        // new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
+        //     bin:'jquery' 
+        // })
     ],
     module:{//这个是第三方的加载器
         rules:[//正则的文件匹配规则
@@ -128,7 +131,7 @@ module.exports = {
                                          //优化图片处理方式，减少http请求
                     options: {
                       limit: 50*1024, 
-                      outputPath: '/image/', //设置图片输出路径 
+                      outputPath: './image/', //设置图片输出路径 
                       esModule:false //不支持es6已经语法
                     }
                 }

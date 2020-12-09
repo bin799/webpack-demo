@@ -1,3 +1,5 @@
+import $ from 'jquery';
+console.log("$",$)
 const name = require("./name"); 
 console.log(name);
 //webpack只能打包处理js类型文件,无法处理非js类型的文件
@@ -7,8 +9,6 @@ import './css/index.css';
 import "./less/index.less";
 (()=>{
    console.log(location.protocol + "//" + location.host,process.env.BASE_URL,process.env.NODE_ENV)
-   console.log("$",bin)
-   console.log("window",window.bin)
 })()
 
 class A {
