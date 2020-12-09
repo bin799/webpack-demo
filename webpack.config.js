@@ -151,5 +151,18 @@ module.exports = {
         minimizer: [   // 配置最小值优化项
           new CssMinimizerPlugin(),// 声明css优化插件的实例
         ],
+        splitChunks:{ 
+            minSize: 30000, // 3kb   表示在压缩前的最小模块大小,默认值是30kb
+            chunks:'all',//同时分割同步和异步代码,推荐。
+            automaticNameDelimiter:'_',//名称分隔符，默认是~
+            cacheGroups: {  //默认的规则不会打包,需要单独定义
+                jquery: { // 将jquery抽出来
+                    name:'jquery',
+                    chunks: 'all',
+                    test: /jquery\.js/,
+                    enforce: true
+                }
+            }
+          }
     }
 };
