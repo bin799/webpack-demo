@@ -2,6 +2,10 @@
 
 // outputPath负责输出目录, 即打包后的写在磁盘的位置.
 // publicPath用来指定资源的请求位置,比如img标签引入或者css引入等;
+//区别
+// path是webpack所有文件的输出的路径，必须是绝对路径，比如：output输出的js,url-loader解析的图片，HtmlWebpackPlugin生成的html文件，都会存放在以path为基础的目录下
+// publicPath 并不会对生成文件的路径造成影响，主要是对你的页面里面引入的资源的路径做对应的补全，常见的就是css文件里面引入的图片
+//例子
 // import Img from './img.jpg';
 // outputPath: 'static/img/',
 // publicPath: './dist/static/img/'
@@ -85,7 +89,7 @@ module.exports = {
             hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
         }),
         new MiniCssExtractPlugin({        // 创建该插件的实例
-            filename: '/css/index.css'    // 指定输出的css文件的文件名
+            filename: 'css/index.css'    // 指定输出的css文件的文件名
         }),
         // new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
         //     bin:'jquery' 
@@ -94,7 +98,12 @@ module.exports = {
     module:{//这个是第三方的加载器
         rules:[//正则的文件匹配规则
             {test:/\.(css|less)$/,use:[
-                MiniCssExtractPlugin.loader, // 配置规则，将处理后的css代码直接输出到指定文件中
+                {
+                    loader:MiniCssExtractPlugin.loader,
+                    options:{
+                        publicPath: '../'
+                    }
+                }, // 配置规则，将处理后的css代码直接输出到指定文件中
                 // 'style-loader', //Adds CSS to the DOM by injecting a <style> tag   (style-loader与MiniCssExtractPlugin.loader不能共用)
                 'css-loader',
                 'less-loader',
@@ -130,7 +139,7 @@ module.exports = {
                                          //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
                                          //优化图片处理方式，减少http请求
                     options: {
-                      limit: 50*1024, 
+                      limit: 10*1024, 
                       outputPath: './image/', //设置图片输出路径 
                       esModule:false //不支持es6已经语法
                     }
