@@ -127,7 +127,8 @@ module.exports = {
                                          //使用webpack处理css中的路径;(use: 'url-loader?limit=43960')可以通过limit指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
                                          //优化图片处理方式，减少http请求
                     options: {
-                      limit: 50*1024,
+                      limit: 50*1024, 
+                      outputPath: '/image/', //设置图片输出路径 
                       esModule:false //不支持es6已经语法
                     }
                 }
