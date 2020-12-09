@@ -85,7 +85,7 @@ module.exports = {
             hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
         }),
         new MiniCssExtractPlugin({        // 创建该插件的实例
-            filename: 'index.css'    // 指定输出的css文件的文件名
+            filename: '/css/index.css'    // 指定输出的css文件的文件名
         }),
         // new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
         //     bin:'jquery' 
