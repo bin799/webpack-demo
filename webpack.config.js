@@ -86,6 +86,17 @@ module.exports = {
                 removeAttributeQuotes: true,    // 是否去除文件中的双引号
                 collapseWhitespace: true        // 是否去除文件中的空行
             },
+            chunks: ['index'], //指定引入的js文件
+            hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
+        }),
+        new htmlWebpackPlugin({// 添加plugins节点配置插件
+            template:path.resolve(__dirname, 'src/vender.html'),//模板路径
+            filename:'vender.html',//自动生成的HTML文件的名称(临时文件名称)
+            minify: {
+                removeAttributeQuotes: true,    // 是否去除文件中的双引号
+                collapseWhitespace: true        // 是否去除文件中的空行
+            },
+            chunks:["vender"],
             hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
         }),
         new MiniCssExtractPlugin({        // 创建该插件的实例
