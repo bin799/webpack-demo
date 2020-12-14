@@ -8,8 +8,8 @@ console.log(name);
 import './css/index.css';
 import "./less/index.less";
 (()=>{
+   console.lo("test-devtool");
    console.log(location.protocol + "//" + location.host,process.env.BASE_URL,process.env.NODE_ENV)
-   alert("index")
 })()
 
 class A {

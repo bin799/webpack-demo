@@ -50,6 +50,7 @@ module.exports = {
     // externals: { //防止将某些 import 的包(package)打包到 bundle 中，而是在运行时(runtime)再去从外部获取这些扩展依赖
     //     jquery: 'jQuery'
     // },
+    devtool: "eval-source-map", //Webpack的源码映射(1、source-map：会产生单独的映射文件2、eval-source-map：不会产生单独的映射文件)
     entry: {
         //设置多个入口
         index:"./src/index.js",
