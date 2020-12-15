@@ -33,6 +33,13 @@
 // pubilicPath:"https://cdn.com/"	//-->https://cdn.com/1.chunk.js
 // pubilicPath:"//cdn.com/assets"	//-->//cdn.com/assets/1.chunk.js
 
+// 开发多页面应用时经常会出现代码需要多处使用的情况，比如官网的头部和底部，而复制粘贴又太low，所以我们需要实现代码复用。
+// 在这里使用到的是html-withimg-loader这个loader，这个loader可以代替html-loader解决html中的图片加载问题，而且支持代码复用。
+// <div>
+// #include("./layout/top.html")
+// <!--子页面将被引入，并且子页面中的img标签同样会进行处理-->
+// </div>
+// 复用html所需的css和js需在使用到的页面的js文件中引入
 const path = require("path");
 const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
@@ -45,6 +52,21 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 //压缩css（cssnano的webpack使用）
 let TerserJSPlugin = require('terser-webpack-plugin');   
 // 压缩js
+let {CleanWebpackPlugin} = require('clean-webpack-plugin');
+
+// 当页面较多时，可以使用动态加载文件的方式来引入：
+const fs = require("fs");
+let htmlPlugins = [];
+const files = fs.readdirSync(path.resolve(__dirname, "src/view"));
+htmlPlugins = files.map((item) => {
+    return new htmlWebpackPlugin({
+        filename: item,
+        template: `./src/view/${item}`,
+        chunks: [item.split(".")[0]],
+        hash: true 
+    });
+});
+
 module.exports = {
     mode: 'production', //production:生产模式、development：开发模式
     // externals: { //防止将某些 import 的包(package)打包到 bundle 中，而是在运行时(runtime)再去从外部获取这些扩展依赖
@@ -53,11 +75,11 @@ module.exports = {
     devtool: "eval-source-map", //Webpack的源码映射(1、source-map：会产生单独的映射文件2、eval-source-map：不会产生单独的映射文件)
     entry: {
         //设置多个入口
-        index:"./src/index.js",
-        vender:"./src/vender.js",
+        index:"./src/js/index.js",
+        vender:"./src/js/vender.js",
     }, //相对路径
     output: {
-        filename: "[name]_[hash].js", //输出文件名称
+        filename: "js/[name]_[hash].js", //输出文件名称
         // [name]可以指代chunk name
         // [hash]：指代Webpack此次打包所有资源生成的hash
         // [chunkhash]：指代当前chunk内容的hash
@@ -80,32 +102,36 @@ module.exports = {
     plugins:[
         //第三步
         new webpack.HotModuleReplacementPlugin(), //new一个热更新的模块
-        new htmlWebpackPlugin({// 添加plugins节点配置插件
-            template:path.resolve(__dirname, 'src/index.html'),//模板路径
-            filename:'index.html',//自动生成的HTML文件的名称(临时文件名称)
-            minify: {
-                removeAttributeQuotes: true,    // 是否去除文件中的双引号
-                collapseWhitespace: true        // 是否去除文件中的空行
-            },
-            chunks: ['index'], //指定引入的js文件
-            hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
-        }),
-        new htmlWebpackPlugin({// 添加plugins节点配置插件
-            template:path.resolve(__dirname, 'src/vender.html'),//模板路径
-            filename:'vender.html',//自动生成的HTML文件的名称(临时文件名称)
-            minify: {
-                removeAttributeQuotes: true,    // 是否去除文件中的双引号
-                collapseWhitespace: true        // 是否去除文件中的空行
-            },
-            chunks:["vender"],
-            hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
-        }),
+        // new htmlWebpackPlugin({// 添加plugins节点配置插件
+        //     template:path.resolve(__dirname, 'src/view/index.html'),//模板路径
+        //     filename:'index.html',//自动生成的HTML文件的名称(临时文件名称)
+        //     minify: {
+        //         removeAttributeQuotes: true,    // 是否去除文件中的双引号
+        //         collapseWhitespace: true        // 是否去除文件中的空行
+        //     },
+        //     chunks: ['index'], //指定引入的js文件
+        //     hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
+        // }),
+        // new htmlWebpackPlugin({// 添加plugins节点配置插件
+        //     template:path.resolve(__dirname, 'src/view/vender.html'),//模板路径
+        //     filename:'vender.html',//自动生成的HTML文件的名称(临时文件名称)
+        //     minify: {
+        //         removeAttributeQuotes: true,    // 是否去除文件中的双引号
+        //         collapseWhitespace: true        // 是否去除文件中的空行
+        //     },
+        //     chunks:["vender"],
+        //     hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
+        // }),
+        ...htmlPlugins,
         new MiniCssExtractPlugin({        // 创建该插件的实例
             filename: 'css/index.css'    // 指定输出的css文件的文件名
         }),
         // new webpack.ProvidePlugin({ //自动加载模块，而不必到处 import 或 require
         //     bin:'jquery' 
         // })
+        // 参数是你要一个字符串，值是你要添加的版权声明信息
+        new webpack.BannerPlugin('Made by BinBin'),
+        new CleanWebpackPlugin()
     ],
     module:{//这个是第三方的加载器
         rules:[//正则的文件匹配规则
