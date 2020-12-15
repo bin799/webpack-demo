@@ -40,6 +40,8 @@
 // <!--子页面将被引入，并且子页面中的img标签同样会进行处理-->
 // </div>
 // 复用html所需的css和js需在使用到的页面的js文件中引入
+
+// 使用BundleAnalyzerPlugin插件打包结果可视化的插件
 const path = require("path");
 const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
