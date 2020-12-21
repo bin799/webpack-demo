@@ -9,8 +9,7 @@ import '../css/index.css';
 import "../less/index.less";
 import "../less/header.less";
 (()=>{
-   console.lo("test-devtool");
-   console.log(location.protocol + "//" + location.host,process.env.BASE_URL,process.env.NODE_ENV)
+   console.log(location.protocol + "//" + location.host,process.env.NODE_ENV)
 })()
 
 class A {
